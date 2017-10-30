@@ -125,8 +125,8 @@ test_script:
       if ($env:FAILURES -ne 'Service not running after install')
       {
           write-host "$env:FAILURES"
-          exit 1
       }
+  - ps: if ($env:FAILURES -ne 'Service not running after install') { exit 1 }
 
 
 # to disable automatic tests
