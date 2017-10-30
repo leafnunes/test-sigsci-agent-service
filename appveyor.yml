@@ -34,7 +34,7 @@ max_jobs: 1
 environment:
   SIGSCI_VERSION: '1.14.1'
   SIGSCI_INSTALL_DIR: 'c:\Program Files\Signal Sciences'
-  FAILURES: 0
+  FAILURES: ''
 
 # Build worker image (VM template)
 image:
@@ -94,26 +94,29 @@ test_script:
   - ps: |
       $failures = $env:FAILURES
       $sigService = Get-service sigsci-agent
-      if ($sigService.Status -eq 'Running')
+      if ($sigService.Status -ne 'Running')
       {
-          write-host "Service Running!"
-      } else {
-          write-host "Service not running!"
-          $failures++
+          write-host "Service not running after install!"
+          $failures = "Service not running after install"
       }
       $env:FAILURES = $failures
   - ps: Start-Service sigsci-agent
   - ps: |
       $failures = $env:FAILURES
       $sigService = Get-service sigsci-agent
-      if ($sigService.Status -eq 'Running')
+      if ($sigService.Status -ne 'Running')
       {
-          write-host "Service Running after manual (re)start!"
-      } else {
           write-host "Service not running after manual start!"
-          $failures++
+          $failures = "$failures, or after manual start"
       }
       $env:FAILURES = $failures
+  - ps: |
+      if ($env:FAILURES -ne '')
+      {
+          write-host "$env:FAILURES"
+          exit 1
+      }
+
 
 # to disable automatic tests
 #test: off
