@@ -1,0 +1,238 @@
+# Notes:
+#   - Minimal appveyor.yml file is an empty file. All sections are optional.
+#   - Indent each level of configuration with 2 spaces. Do not use tabs!
+#   - All section names are case-sensitive.
+#   - Section names should be unique on each level.
+
+#---------------------------------#
+#      general configuration      #
+#---------------------------------#
+
+# version format
+version: 1.14.1.{build}
+
+# branches to build
+branches:
+  # whitelist
+  only:
+    - master
+
+# Do not build on tags (GitHub and BitBucket)
+skip_tags: true
+
+# Start builds on tags only (GitHub and BitBucket)
+skip_non_tags: false
+
+# Maximum number of concurrent jobs for the project
+max_jobs: 1
+
+#---------------------------------#
+#    environment configuration    #
+#---------------------------------#
+
+
+environment:
+  SIGSCI_VERSION: 1.14.1
+  SIGSCI_INSTALL_DIR: 'c:\Program Files\Signal Sciences'
+  FAILURES: 0
+
+# Build worker image (VM template)
+image:
+  - Visual Studio 2017
+
+# scripts that are called at very beginning, before repo cloning
+#init:
+
+# clone directory
+clone_folder: c:\projects\test-sigsci-agent-service
+
+# fetch repository as zip archive
+#shallow_clone: true                 # default is "false"
+
+# set clone depth
+clone_depth: 5                      # clone entire repository history if not defined
+
+# enable service required for build/tests
+services:
+    #- iis                 # start IIS
+
+#---------------------------------#
+#       build configuration       #
+#---------------------------------#
+
+# build platform, i.e. x86, x64, Any CPU. This setting is optional.
+platform:
+  - x64
+
+before_build:
+  - ps: New-Item -ItemType "directory" -Path "$env:SIGSCI_INSTALL_DIR\Agent"
+  - ps: Out-File -Encoding ascii -FilePath "$env:SIGSCI_INSTALL_DIR\Agent\agent.conf" -InputObject "accesskeyid=5c85b88b-6579-470b-9aef-84be9ec6be30`r`nsecretaccesskey=6koN5SGNBf2siVwOIZM5PLVJ8Nw2r4INbW8cCbZdaVg`r`nrpc-address=127.0.0.1:9999`r`nrpc-version=1`r`n"
+
+build_script:
+  - ps: Invoke-webrequest https://dl.signalsciences.net/?prefix=sigsci-agent/$env:SIGSCI_VERSION/windows/sigsci-agent_$env:SIGSCI_VERSION.msi -OutFile sigsci-agent.msi
+  # the '| Out-Null' tells powershell to wait for the exe process to complete
+  - ps: msiexec.exe /qn /i sigsci-agent.msi /l* install.log | Out-Null 
+
+# scripts to run *after* solution is built and *before* automatic packaging occurs (web apps, NuGet packages, Azure Cloud Services)
+#before_package:
+
+# scripts to run after build
+after_build:
+
+#---------------------------------#
+#       tests configuration       #
+#---------------------------------#
+
+#before_test:
+
+# scripts to run after tests
+#after_test:
+
+# to run your custom scripts instead of automatic tests
+test_script:
+  - ps: |
+      $failures = $env:FAILURES
+      $sigService = Get-service sigsci-agent
+      if ($sigService.Status -eq 'Running')
+      {
+          write-host "Service Running!"
+      } else {
+          write-host "Service not running!"
+          $failures++
+      }
+      $env:FAILURES = $failures
+  - ps: Start-Service sigsci-agent
+  - ps: |
+      $failures = $env:FAILURES
+      $sigService = Get-service sigsci-agent
+      if ($sigService.Status -eq 'Running')
+      {
+          write-host "Service Running after manual (re)start!"
+      } else {
+          write-host "Service not running after manual start!"
+          $failures++
+      }
+      $env:FAILURES = $failures
+
+# to disable automatic tests
+#test: off
+
+#---------------------------------#
+#      artifacts configuration    #
+#---------------------------------#
+
+artifacts:
+  - path: *.log
+
+# pushing entire folder as a zip archive
+#  - path: HttpModule\bin\$(configuration)
+
+# pushing a single file
+#  - path: test.zip
+
+# pushing a single file with environment variable in path and "Deployment name" specified
+#  - path: MyProject\bin\$(configuration)
+#    name: myapp
+
+# pushing all *.nupkg files in build directory recursively
+#    - path: '**\*.nupkg'
+
+
+#---------------------------------#
+#     deployment configuration    #
+#---------------------------------#
+
+# providers: Local, FTP, WebDeploy, AzureCS, AzureBlob, S3, NuGet, Environment
+# provider names are case-sensitive!
+# deploy:
+
+# Deploying to NuGet feed
+#  - provider: NuGet
+#    server: https://my.nuget.server/feed
+#    api_key:
+#      secure: FYWX6NfjZIVw==
+#    skip_symbols: false
+#    symbol_server: https://your.symbol.server/feed
+#    artifact: MyPackage.nupkg
+
+# Deploy to GitHub Releases
+#  - provider: GitHub
+#    artifact: /.*\.nupkg/           # upload all NuGet packages to release assets
+#    draft: false
+#    prerelease: false
+#    on:
+#      branch: master                # release from master branch only
+#      appveyor_repo_tag: true       # deploy on tag push only
+
+# Deploying to a named environment
+#  - provider: Environment
+#    name: staging
+#    on:
+#      branch: staging
+#      env_var1: value1
+#      env_var2: value2
+
+# scripts to run before deployment
+before_deploy:
+
+# scripts to run after deployment
+after_deploy:
+
+# to run your custom scripts instead of provider deployments
+deploy_script:
+
+# to disable deployment
+#deploy: off
+
+#---------------------------------#
+#        global handlers          #
+#---------------------------------#
+
+# on successful build
+#on_success:
+#  - do something
+
+# on build failure
+#on_failure:
+#- ps: |
+#if($env:RDP_ON_FAIL)
+#{
+#$blockRdp = $true
+#iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+#}
+
+# after build failure or success, leave worker up for debugging rdp if RDP variable set
+#on_finish:
+#- ps: |
+#if($env:RDP_ON_FINISH)
+#{
+#$blockRdp = $true
+#iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+#}
+
+#---------------------------------#
+#         notifications           #
+#---------------------------------#
+
+notifications:
+
+  # Email
+  - provider: Email
+    to:
+      - leaf@signalsciences.com
+#      - user2@email.com
+    on_build_status_changed: true
+#    subject: 'Build {{status}}'                  # optional
+#    message: "{{message}}, {{commitId}}, ..."    # optional
+
+  # Slack
+#  - provider: Slack
+#    incoming_webhook: http://incoming-webhook-url
+
+  # ...or using auth token
+
+#  - provider: Slack
+#    auth_token:
+#      secure: kBl9BlxvRMr9liHmnBs14A==
+#    channel: development
+#    template: "{message}, {commitId}, ..."
