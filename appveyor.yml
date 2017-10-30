@@ -73,6 +73,26 @@ build_script:
   - ps: Invoke-webrequest "https://dl.signalsciences.net/sigsci-agent/$env:SIGSCI_VERSION/windows/sigsci-agent_$env:SIGSCI_VERSION.msi" -OutFile sigsci-agent.msi
   # the '| Out-Null' tells powershell to wait for the exe process to complete
   - ps: msiexec.exe /qn /i sigsci-agent.msi /l* install.log | Out-Null 
+  - ps: |
+      $failures = $env:FAILURES
+      $sigService = Get-service sigsci-agent
+      if ($sigService.Status -ne 'Running')
+      {
+          write-host "Service not running after install!"
+      }
+      $env:FAILURES = $failures
+  - ps: Start-Service sigsci-agent
+  - ps: |
+      $failures = $env:FAILURES
+      $sigService = Get-service sigsci-agent
+      if ($sigService.Status -ne 'Running')
+      {
+          write-host "Service not running after manual start!"
+          $failures = "$failures, or after manual start"
+      }
+      $env:FAILURES = $failures
+  - ps: Restart-Computer -Force
+  - ps: Start-Sleep -s 20
 
 # scripts to run *after* solution is built and *before* automatic packaging occurs (web apps, NuGet packages, Azure Cloud Services)
 #before_package:
@@ -91,27 +111,6 @@ after_build:
 
 # to run your custom scripts instead of automatic tests
 test_script:
-  - ps: |
-      $failures = $env:FAILURES
-      $sigService = Get-service sigsci-agent
-      if ($sigService.Status -ne 'Running')
-      {
-          write-host "Service not running after install!"
-          $failures = "Service not running after install"
-      }
-      $env:FAILURES = $failures
-  - ps: Start-Service sigsci-agent
-  - ps: |
-      $failures = $env:FAILURES
-      $sigService = Get-service sigsci-agent
-      if ($sigService.Status -ne 'Running')
-      {
-          write-host "Service not running after manual start!"
-          $failures = "$failures, or after manual start"
-      }
-      $env:FAILURES = $failures
-  - ps: Restart-Computer -Force
-  - ps: Start-Sleep -s 20
   - ps: |
       $failures = $env:FAILURES
       $sigService = Get-service sigsci-agent
