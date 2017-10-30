@@ -111,7 +111,7 @@ test_script:
       }
       $env:FAILURES = $failures
   - ps: Restart-Computer -Force
-  - ps: Start-Sleep -s 10
+  - ps: Start-Sleep -s 20
   - ps: |
       $failures = $env:FAILURES
       $sigService = Get-service sigsci-agent
