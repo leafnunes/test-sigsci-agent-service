@@ -77,6 +77,7 @@ install:
       if ($sigService.Status -ne 'Running')
       {
           write-host "Service not running after install!"
+          $failures = 'Service not running after install'
       }
       $env:FAILURES = $failures
   - ps: Start-Service sigsci-agent
@@ -94,10 +95,10 @@ install:
   - REM starting sleepytime 1
   - ps: Start-Sleep -s 5
   - ps: Restart-Computer -Force
-  - ps: Start-Sleep -s 20
-  - REM starting wakeytime 3
-  - REM starting wakeytime 2
+  - ps: Start-Sleep -s 5
   - REM starting wakeytime 1
+  - REM starting wakeytime 2
+  - REM starting wakeytime 3
 
 build_script:
   - ps: |
