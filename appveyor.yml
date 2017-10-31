@@ -9,7 +9,7 @@
 #---------------------------------#
 
 # version format
-version: 1.15.0.{build}
+version: 1.15.1.{build}
 
 # branches to build
 branches:
@@ -32,7 +32,7 @@ max_jobs: 1
 
 
 environment:
-  SIGSCI_VERSION: '1.15.0'
+  SIGSCI_VERSION: '1.15.1'
   SIGSCI_INSTALL_DIR: 'c:\Program Files\Signal Sciences'
   FAILURES: ''
 
@@ -90,9 +90,9 @@ install:
           $failures = "$failures, or after manual start"
       }
       $env:FAILURES = $failures
-  - REM starting sleepytime 3
-  - REM starting sleepytime 2
-  - REM starting sleepytime 1
+  - REM pre restart sleepytime 3
+  - REM pre restart sleepytime 2
+  - REM pre restart sleepytime 1
   - ps: Start-Sleep -s 5
   - ps: Restart-Computer -Force
   - ps: Start-Sleep -s 5
