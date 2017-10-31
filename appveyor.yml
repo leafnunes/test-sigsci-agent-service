@@ -9,7 +9,7 @@
 #---------------------------------#
 
 # version format
-version: 2.0.0.{build}
+version: 1.14.1.{build}
 
 # branches to build
 branches:
@@ -32,12 +32,14 @@ max_jobs: 1
 
 
 environment:
-  SIGSCI_VERSION: '2.0.0'
+  SIGSCI_VERSION: '1.14.1'
   SIGSCI_INSTALL_DIR: 'c:\Program Files\Signal Sciences'
   FAILURES: ''
 
 # Build worker image (VM template)
+# include VS2013, as it's windows 2012R2, as well as VS2017 which is 2016
 image:
+  - Visual Studio 2013
   - Visual Studio 2017
 
 # scripts that are called at very beginning, before repo cloning
