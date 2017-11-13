@@ -120,9 +120,10 @@ build_script:
       }
       $env:FAILURES = $failures
   - ps: |
-      if ($env:FAILURES -ne '')
+      $failures = $env:FAILURES
+      if ($failures.Trim() -ne '')
       {
-          write-host "$env:FAILURES"
+          write-host "Failures: $env:FAILURES"
           exit 1
       } else {
           write-host "All Tests Pass"
