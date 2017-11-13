@@ -121,7 +121,7 @@ build_script:
       $env:FAILURES = $failures
   - ps: |
       $failures = $env:FAILURES
-      if ($failures.Trim() -ne '')
+      if ($failures)
       {
           write-host "Failures: $env:FAILURES"
           exit 1
