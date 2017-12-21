@@ -32,7 +32,7 @@ max_jobs: 1
 
 environment:
   matrix:
-    - SIGSCI_VERSION: '2.0.0'
+      #- SIGSCI_VERSION: '2.0.0'
       #- SIGSCI_VERSION: '2.0.1'
       #- SIGSCI_VERSION: '2.1.0'
       #- SIGSCI_VERSION: '2.1.1'
