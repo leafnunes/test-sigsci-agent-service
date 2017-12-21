@@ -40,6 +40,7 @@ environment:
       #- SIGSCI_VERSION: '2.2.0'
     - SIGSCI_VERSION: '2.2.1'
   SIGSCI_INSTALL_DIR: 'c:\Program Files\Signal Sciences'
+  RDP_ON_FINISH: 'true'
   FAILURES: ''
 
 # Build worker image (VM template)
