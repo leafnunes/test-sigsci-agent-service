@@ -75,7 +75,7 @@ install:
   - ps: Invoke-webrequest "https://dl.signalsciences.net/sigsci-agent/$env:SIGSCI_FIRST_VERSION/windows/sigsci-agent_$env:SIGSCI_FIRST_VERSION.msi" -OutFile sigsci-agent.msi
   # the '| Out-Null' tells powershell to wait for the exe process to complete
   - ps: msiexec.exe /qn /i sigsci-agent.msi /l* install.log | Out-Null 
-  - ps: "C:\Program Files\Signal Sciences\Agent\sigsci-agent.exe" -version
+  - ps: "$env:SIGSCI_INSTALL_DIR\Agent\sigsci-agent.exe" -version
   - ps: |
       $failures = $env:FAILURES
       $sigService = Get-service sigsci-agent
@@ -120,7 +120,7 @@ build_script:
   - ps: Invoke-webrequest "https://dl.signalsciences.net/sigsci-agent/$env:SIGSCI_SECOND_VERSION/windows/sigsci-agent_$env:SIGSCI_SECOND_VERSION.msi" -OutFile sigsci-agent.msi
   # the '| Out-Null' tells powershell to wait for the exe process to complete
   - ps: msiexec.exe /qn /i sigsci-agent.msi /l* install.log | Out-Null 
-  - ps: "C:\Program Files\Signal Sciences\Agent\sigsci-agent.exe" -version
+  - ps: "$env:SIGSCI_INSTALL_DIR\Agent\sigsci-agent.exe" -version
   - ps: |
       $failures = $env:FAILURES
       $sigService = Get-service sigsci-agent
@@ -148,7 +148,7 @@ build_script:
   - ps: Invoke-webrequest "https://dl.signalsciences.net/sigsci-agent/$env:SIGSCI_THIRD_VERSION/windows/sigsci-agent_$env:SIGSCI_THIRD_VERSION.msi" -OutFile sigsci-agent.msi
   # the '| Out-Null' tells powershell to wait for the exe process to complete
   - ps: msiexec.exe /qn /i sigsci-agent.msi /l* install.log | Out-Null 
-  - ps: "C:\Program Files\Signal Sciences\Agent\sigsci-agent.exe" -version
+  - ps: "$env:SIGSCI_INSTALL_DIR\Agent\sigsci-agent.exe" -version
   - ps: |
       $failures = $env:FAILURES
       $sigService = Get-service sigsci-agent
