@@ -31,9 +31,9 @@ max_jobs: 1
 #---------------------------------#
 
 environment:
-  SIGSCI_FIRST_VERSION: '3.9.4'
-  SIGSCI_SECOND_VERSION: '3.10.0'
-  SIGSCI_THIRD_VERSION: '3.10.1'
+  SIGSCI_FIRST_VERSION: '3.10.1'
+  SIGSCI_SECOND_VERSION: '3.11.0'
+  SIGSCI_THIRD_VERSION: '3.12.0'
   SIGSCI_INSTALL_DIR: 'c:\Program Files\Signal Sciences'
   RDP_ON_FAIL: 'true'
   FAILURES: ''
