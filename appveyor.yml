@@ -31,7 +31,7 @@ max_jobs: 1
 #---------------------------------#
 
 environment:
-  SIGSCI_FIRST_VERSION: '3.12.0'
+  SIGSCI_FIRST_VERSION: '3.12.1'
   SIGSCI_SECOND_VERSION: '3.12.1'
   SIGSCI_THIRD_VERSION: '3.13.0'
   SIGSCI_INSTALL_DIR: 'c:\Program Files\Signal Sciences'
@@ -112,7 +112,7 @@ build_script:
           write-host "Service not running after restart!"
           $failures = "$failures, or after reboot"
       } else {
-          write-host "Service running after restart!"
+          write-host "Service running after machine restart!"
       }
       $env:FAILURES = $failures
   - ps: write-host "https://dl.signalsciences.net/sigsci-agent/$env:SIGSCI_SECOND_VERSION/windows/sigsci-agent_$env:SIGSCI_SECOND_VERSION.msi"
