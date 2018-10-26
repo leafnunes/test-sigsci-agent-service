@@ -32,15 +32,11 @@ max_jobs: 1
 
 environment:
   matrix:
-      #- SIGSCI_VERSION: '2.0.0'
-      #- SIGSCI_VERSION: '2.0.1'
-      #- SIGSCI_VERSION: '2.1.0'
-      #- SIGSCI_VERSION: '2.1.1'
-      #- SIGSCI_VERSION: '2.1.2'
-      #- SIGSCI_VERSION: '2.2.0'
-    - SIGSCI_VERSION: '2.2.1'
+  SIGSCI_FIRST_VERSION: '3.12.0'
+  SIGSCI_SECOND_VERSION: '3.12.1'
+  SIGSCI_THIRD_VERSION: '3.13.0'
   SIGSCI_INSTALL_DIR: 'c:\Program Files\Signal Sciences'
-  RDP_ON_FINISH: 'true'
+  RDP_ON_FAIL: 'true'
   FAILURES: ''
 
 # Build worker image (VM template)
@@ -76,8 +72,8 @@ platform:
 install:
   - ps: New-Item -ItemType "directory" -Path "$env:SIGSCI_INSTALL_DIR\Agent"
   - ps: Out-File -Encoding ascii -FilePath "$env:SIGSCI_INSTALL_DIR\Agent\agent.conf" -InputObject "accesskeyid=5c85b88b-6579-470b-9aef-84be9ec6be30`r`nsecretaccesskey=6koN5SGNBf2siVwOIZM5PLVJ8Nw2r4INbW8cCbZdaVg`r`nrpc-address=127.0.0.1:9999`r`nrpc-version=1`r`n"
-  - ps: write-host "https://dl.signalsciences.net/sigsci-agent/$env:SIGSCI_VERSION/windows/sigsci-agent_$env:SIGSCI_VERSION.msi"
-  - ps: Invoke-webrequest "https://dl.signalsciences.net/sigsci-agent/$env:SIGSCI_VERSION/windows/sigsci-agent_$env:SIGSCI_VERSION.msi" -OutFile sigsci-agent.msi
+  - ps: write-host "https://dl.signalsciences.net/sigsci-agent/$env:SIGSCI_FIRST_VERSION/windows/sigsci-agent_$env:SIGSCI_FIRST_VERSION.msi"
+  - ps: Invoke-webrequest "https://dl.signalsciences.net/sigsci-agent/$env:SIGSCI_FIRST_VERSION/windows/sigsci-agent_$env:SIGSCI_FIRST_VERSION.msi" -OutFile sigsci-agent.msi
   # the '| Out-Null' tells powershell to wait for the exe process to complete
   - ps: msiexec.exe /qn /i sigsci-agent.msi /l* install.log | Out-Null 
   - ps: |
@@ -103,15 +99,9 @@ install:
           write-host "Service running after manual restart!"
       }
       $env:FAILURES = $failures
-  - REM pre restart sleepytime 3
-  - REM pre restart sleepytime 2
-  - REM pre restart sleepytime 1
   - ps: Start-Sleep -s 5
   - ps: Restart-Computer -Force
   - ps: Start-Sleep -s 5
-  - REM starting wakeytime 1
-  - REM starting wakeytime 2
-  - REM starting wakeytime 3
 
 build_script:
   - ps: |
@@ -124,6 +114,60 @@ build_script:
           $failures = "$failures, or after reboot"
       } else {
           write-host "Service running after restart!"
+      }
+      $env:FAILURES = $failures
+  - ps: write-host "https://dl.signalsciences.net/sigsci-agent/$env:SIGSCI_SECOND_VERSION/windows/sigsci-agent_$env:SIGSCI_SECOND_VERSION.msi"
+  - ps: Invoke-webrequest "https://dl.signalsciences.net/sigsci-agent/$env:SIGSCI_SECOND_VERSION/windows/sigsci-agent_$env:SIGSCI_SECOND_VERSION.msi" -OutFile sigsci-agent.msi
+  # the '| Out-Null' tells powershell to wait for the exe process to complete
+  - ps: msiexec.exe /qn /i sigsci-agent.msi /l* install.log | Out-Null 
+  - ps: |
+      $failures = $env:FAILURES
+      $sigService = Get-service sigsci-agent
+      if ($sigService.Status -ne 'Running')
+      {
+          write-host "Service not running after install!"
+          $failures = 'Service not running after install'
+      } else {
+          write-host "Service running after manual install!"
+      }
+      $env:FAILURES = $failures
+  - ps: Start-Service sigsci-agent
+  - ps: |
+      $failures = $env:FAILURES
+      $sigService = Get-service sigsci-agent
+      if ($sigService.Status -ne 'Running')
+      {
+          write-host "Service not running after manual start!"
+          $failures = "$failures, or after manual start"
+      } else {
+          write-host "Service running after manual restart!"
+      }
+      $env:FAILURES = $failures
+  - ps: write-host "https://dl.signalsciences.net/sigsci-agent/$env:SIGSCI_THIRD_VERSION/windows/sigsci-agent_$env:SIGSCI_THIRD_VERSION.msi"
+  - ps: Invoke-webrequest "https://dl.signalsciences.net/sigsci-agent/$env:SIGSCI_THIRD_VERSION/windows/sigsci-agent_$env:SIGSCI_THIRD_VERSION.msi" -OutFile sigsci-agent.msi
+  # the '| Out-Null' tells powershell to wait for the exe process to complete
+  - ps: msiexec.exe /qn /i sigsci-agent.msi /l* install.log | Out-Null 
+  - ps: |
+      $failures = $env:FAILURES
+      $sigService = Get-service sigsci-agent
+      if ($sigService.Status -ne 'Running')
+      {
+          write-host "Service not running after install!"
+          $failures = 'Service not running after install'
+      } else {
+          write-host "Service running after manual install!"
+      }
+      $env:FAILURES = $failures
+  - ps: Start-Service sigsci-agent
+  - ps: |
+      $failures = $env:FAILURES
+      $sigService = Get-service sigsci-agent
+      if ($sigService.Status -ne 'Running')
+      {
+          write-host "Service not running after manual start!"
+          $failures = "$failures, or after manual start"
+      } else {
+          write-host "Service running after manual restart!"
       }
       $env:FAILURES = $failures
   - ps: |
