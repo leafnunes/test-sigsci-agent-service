@@ -35,7 +35,7 @@ environment:
   SIGSCI_SECOND_VERSION: '3.12.0'
   SIGSCI_THIRD_VERSION: '3.12.1'
   SIGSCI_INSTALL_DIR: 'c:\Program Files\Signal Sciences'
-  PATH: '$env:PATH;$env:SIGSCI_INSTALL_DIR\Agent'
+  PATH: $(PATH);$(SIGSCI_INSTALL_DIR)\Agent
   RDP_ON_FAIL: 'true'
   FAILURES: ''
 
