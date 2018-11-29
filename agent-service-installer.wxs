@@ -34,9 +34,7 @@
         />
     </Upgrade>
     <MajorUpgrade DowngradeErrorMessage="A newer version is already installed. If you are sure you want to downgrade, remove the existing installation via Programs and Features first." />
-    <InstallExecuteSequence>
-      <RemoveExistingProducts After="InstallInitialize"/>
-    </InstallExecuteSequence>
+
     <Media Id='1' Cabinet='SigSciAgent.cab' EmbedCab='yes' DiskPrompt="CD-ROM #1" />
     <Property Id='DiskPrompt' Value="Signal Sciences Agent Installation [1]" />
     <Directory Id='TARGETDIR' Name='SourceDir'>
