@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='windows-1252'?>
+<?define UpgradeCode = "24734998-21C4-4722-A355-9B6C5FE724AD" ?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+  <Product
+    Name='Signal Sciences Agent'
+    Id='*'
+    UpgradeCode='$(var.UpgradeCode)'
+    Language='1033'
+    Codepage='1252'
+    Version='$(env.SIGSCI_WINDOWS_INSTALLER_VERSION)'
+    Manufacturer='Signal Sciences'
+    >
+    <Package
+      Id='*'
+      Keywords='Installer'
+      Description="Signal Sciences Agent Installer"
+      Manufacturer='Signal Sciences'
+      InstallerVersion='200'
+      Languages='1033'
+      Compressed='yes'
+      SummaryCodepage='1252'
+      InstallScope='perMachine'
+      />
+    <Property Id="MSIUSEREALADMINDETECTION" Value="1" />
+    <Property Id="ARPNOMODIFY" Value="1" />
+    <Upgrade Id="$(var.UpgradeCode)">
+      <UpgradeVersion
+        Minimum="1.0.0"
+        IncludeMinimum="yes"
+        OnlyDetect="no"
+        Maximum="$(env.SIGSCI_WINDOWS_INSTALLER_VERSION)"
+        IncludeMaximum="no"
+        Property="PREVIOUSFOUND"
+        />
+    </Upgrade>
+    <MajorUpgrade DowngradeErrorMessage="A newer version is already installed. If you are sure you want to downgrade, remove the existing installation via Programs and Features first." />
+    <InstallExecuteSequence>
+      <RemoveExistingProducts After="InstallInitialize"/>
+    </InstallExecuteSequence>
+    <Media Id='1' Cabinet='SigSciAgent.cab' EmbedCab='yes' DiskPrompt="CD-ROM #1" />
+    <Property Id='DiskPrompt' Value="Signal Sciences Agent Installation [1]" />
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+      <Directory Id='ProgramFiles64Folder' Name='PFiles'>
+        <Directory Id='SigSci' Name='Signal Sciences'>
+          <Directory Id='INSTALLDIR' Name='Agent'>
+            <Component Id='MainExecutable' Guid='462C5BDA-9576-4CF8-A596-AF24D1B540E6'>
+              <File Id='AgentEXE' Name='sigsci-agent.exe' DiskId='1' Source='sigsci-agent.exe' KeyPath='yes'/>
+              <ServiceInstall
+                Id="SigsciServiceInstaller"
+                Type="ownProcess"
+                Vital="yes"
+                Name="sigsci-agent"
+                DisplayName="Signal Sciences Agent"
+                Description="Signal Sciences Agent $(env.SIGSCI_WINDOWS_INSTALLER_VERSION)"
+                Start="auto"
+                Account="NT AUTHORITY\LocalService"
+                ErrorControl="ignore"
+                Interactive="no"
+                />
+              <ServiceControl Id='SigsciServiceControl' Name='sigsci-agent' Start='install' Stop='uninstall' Remove='uninstall' Wait='no'/>
+            </Component>
+          </Directory>
+        </Directory>
+      </Directory>
+    </Directory>
+    <Feature Id='Complete' Level='1'>
+      <ComponentRef Id='MainExecutable' />
+    </Feature>
+  </Product>
+</Wix>
