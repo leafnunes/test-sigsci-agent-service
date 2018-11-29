@@ -119,8 +119,9 @@ build_script:
       }
       $env:FAILURES = $failures
   - 7z e sigsci-agent.zip
-  - ps: & $env:wix\bin\candle.exe agent-service-installer.wxs
-  - ps: & $env:wix\bin\light.exe agent-service-installer.wixobj -out sigsci-agent-local.msi
+  - ps: |
+      & $env:WIX\bin\candle.exe agent-service-installer.wxs
+      & $env:WIX\bin\light.exe agent-service-installer.wixobj -out sigsci-agent-local.msi
  
   # the '| Out-Null' tells powershell to wait for the exe process to complete
   - ps: msiexec.exe /qn /i sigsci-agent-local.msi /l* install.log | Out-Null 
