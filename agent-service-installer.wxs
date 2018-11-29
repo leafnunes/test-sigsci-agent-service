@@ -20,6 +20,7 @@
       Compressed='yes'
       SummaryCodepage='1252'
       InstallScope='perMachine'
+      Platform='x64'
       />
     <Property Id="MSIUSEREALADMINDETECTION" Value="1" />
     <Property Id="ARPNOMODIFY" Value="1" />
@@ -33,8 +34,11 @@
         Property="PREVIOUSFOUND"
         />
     </Upgrade>
-    <MajorUpgrade DowngradeErrorMessage="A newer version is already installed. If you are sure you want to downgrade, remove the existing installation via Programs and Features first." />
-
+    <MajorUpgrade
+        Schedule="afterInstallInitialize"
+        AllowSameVersionUpgrades="yes"
+        DowngradeErrorMessage="A newer version is already installed. If you are sure you want to downgrade, remove the existing installation via Programs and Features first."
+        />
     <Media Id='1' Cabinet='SigSciAgent.cab' EmbedCab='yes' DiskPrompt="CD-ROM #1" />
     <Property Id='DiskPrompt' Value="Signal Sciences Agent Installation [1]" />
     <Directory Id='TARGETDIR' Name='SourceDir'>
