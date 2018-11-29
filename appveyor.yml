@@ -118,9 +118,9 @@ build_script:
           write-host "Service running after machine restart!"
       }
       $env:FAILURES = $failures
-  - cmd: 7z e sigsci-agent.zip
-  - cmd: "%WIX%"\bin\candle.exe agent-service-installer.wxs
-  - cmd: "%WIX%"\bin\light.exe agent-service-installer.wixobj -out sigsci-agent-local.msi
+  - 7z e sigsci-agent.zip
+  - "%WIX%"\bin\candle.exe agent-service-installer.wxs
+  - "%WIX%"\bin\light.exe agent-service-installer.wixobj -out sigsci-agent-local.msi
  
   # the '| Out-Null' tells powershell to wait for the exe process to complete
   - ps: msiexec.exe /qn /i sigsci-agent-local.msi /l* install.log | Out-Null 
