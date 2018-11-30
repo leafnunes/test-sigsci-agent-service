@@ -42,8 +42,8 @@ environment:
 # Build worker image (VM template)
 # include VS2013, as it's windows 2012R2, as well as VS2017 which is 2016
 image:
-  - Visual Studio 2013
   - Visual Studio 2017
+    #- Visual Studio 2013
 
 # scripts that are called at very beginning, before repo cloning
 #init:
@@ -74,7 +74,7 @@ install:
   - ps: Out-File -Encoding ascii -FilePath "$env:SIGSCI_INSTALL_DIR\Agent\agent.conf" -InputObject "accesskeyid=5c85b88b-6579-470b-9aef-84be9ec6be30`r`nsecretaccesskey=6koN5SGNBf2siVwOIZM5PLVJ8Nw2r4INbW8cCbZdaVg`r`nrpc-address=127.0.0.1:9999`r`nrpc-version=1`r`n"
   - ps: write-host "https://dl.signalsciences.net/sigsci-agent/$env:SIGSCI_FIRST_VERSION/windows/sigsci-agent_$env:SIGSCI_FIRST_VERSION.msi"
   - ps: Invoke-webrequest "https://dl.signalsciences.net/sigsci-agent/$env:SIGSCI_FIRST_VERSION/windows/sigsci-agent_$env:SIGSCI_FIRST_VERSION.msi" -OutFile sigsci-agent.msi
-  - ps: Invoke-webrequest "https://github.com/leafnunes/test-sigsci-agent-service/releases/download/v0.1/sigsci-agent_3.15.1.msi" -OutFile sigsci-agent-3.15.1.msi
+  - ps: Invoke-webrequest "https://github.com/leafnunes/test-sigsci-agent-service/releases/download/v0.3/sigsci-agent_3.15.1.msi" -OutFile sigsci-agent-3.15.1.msi
   - ps: Invoke-webrequest "https://dl.signalsciences.net/sigsci-agent/$env:SIGSCI_SECOND_VERSION/windows/sigsci-agent_$env:SIGSCI_SECOND_VERSION.zip" -OutFile sigsci-agent.zip
   # the '| Out-Null' tells powershell to wait for the exe process to complete
   - ps: msiexec.exe /qn /i sigsci-agent.msi /l* install.log | Out-Null 
