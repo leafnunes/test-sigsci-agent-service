@@ -20,6 +20,7 @@
       Compressed='yes'
       SummaryCodepage='1252'
       InstallScope='perMachine'
+      Platform='x64'
       />
     <Property Id="MSIUSEREALADMINDETECTION" Value="1" />
     <Property Id="ARPNOMODIFY" Value="1" />
@@ -45,7 +46,10 @@
         <Directory Id='SigSci' Name='Signal Sciences'>
           <Directory Id='INSTALLDIR' Name='Agent'>
             <Component Id='MainExecutable' Guid='462C5BDA-9576-4CF8-A596-AF24D1B540E6' Win64='yes'>
-              <File Id='AgentEXE' Name='sigsci-agent.exe' DiskId='1' Source='sigsci-agent.exe' KeyPath='yes'/>
+              <File Id='AgentEXE' Name='sigsci-agent.exe' DiskId='1'
+                    Source='sigsci-agent.exe'
+                    KeyPath='yes' 
+                    ProcessorArchitecture="x64" />
               <ServiceInstall
                 Id="SigsciServiceInstaller"
                 Type="ownProcess"
