@@ -173,6 +173,16 @@ build_script:
           write-host "Service running after manual restart!"
       }
       $env:FAILURES = $failures
+  - ps: msiexec.exe /qn /i sigsci-agent-3.15.1.msi /l* install3.log | Out-Null
+  - ps: |
+      $failures = $env:FAILURES
+      $sigService = Get-service sigsci-agent
+      if ($sigService.Status -ne 'Running')
+      {
+          write-host "Service not running after reinstall of same version!"
+          $failures = "$failures, or after reinstall of same version"
+      }
+      $env:FAILURES = $failures
   - ps: |
       $failures = $env:FAILURES
       if ($failures)
