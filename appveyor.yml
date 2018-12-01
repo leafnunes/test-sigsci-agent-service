@@ -119,36 +119,36 @@ build_script:
           write-host "Service running after machine restart!"
       }
       $env:FAILURES = $failures
-  - 7z e sigsci-agent.zip
-  - ps: |
-      & $env:WIX\bin\candle.exe agent-service-installer.wxs
-      & $env:WIX\bin\light.exe agent-service-installer.wixobj -out sigsci-agent-local.msi
+#  - 7z e sigsci-agent.zip
+#  - ps: |
+#      & $env:WIX\bin\candle.exe agent-service-installer.wxs
+#      & $env:WIX\bin\light.exe agent-service-installer.wixobj -out sigsci-agent-local.msi
  
   # the '| Out-Null' tells powershell to wait for the exe process to complete
-  - ps: msiexec.exe /qn /i sigsci-agent-local.msi /l* install1.log | Out-Null 
-  - ps: |
-      $failures = $env:FAILURES
-      $sigService = Get-service sigsci-agent
-      if ($sigService.Status -ne 'Running')
-      {
-          write-host "Service not running after install!"
-          $failures = 'Service not running after install'
-      } else {
-          write-host "Service running after manual install!"
-      }
-      $env:FAILURES = $failures
-  - ps: Start-Service sigsci-agent
-  - ps: |
-      $failures = $env:FAILURES
-      $sigService = Get-service sigsci-agent
-      if ($sigService.Status -ne 'Running')
-      {
-          write-host "Service not running after manual start!"
-          $failures = "$failures, or after manual start"
-      } else {
-          write-host "Service running after manual restart!"
-      }
-      $env:FAILURES = $failures
+#  - ps: msiexec.exe /qn /i sigsci-agent-local.msi /l* install1.log | Out-Null 
+#  - ps: |
+#      $failures = $env:FAILURES
+#      $sigService = Get-service sigsci-agent
+#      if ($sigService.Status -ne 'Running')
+#      {
+#          write-host "Service not running after install!"
+#          $failures = 'Service not running after install'
+#      } else {
+#          write-host "Service running after manual install!"
+#      }
+#      $env:FAILURES = $failures
+#  - ps: Start-Service sigsci-agent
+#  - ps: |
+#      $failures = $env:FAILURES
+#      $sigService = Get-service sigsci-agent
+#      if ($sigService.Status -ne 'Running')
+#      {
+#          write-host "Service not running after manual start!"
+#          $failures = "$failures, or after manual start"
+#      } else {
+#          write-host "Service running after manual restart!"
+#      }
+#      $env:FAILURES = $failures
   - ps: msiexec.exe /qn /i sigsci-agent-3.15.1.msi /l* install2.log | Out-Null 
   - ps: |
       $failures = $env:FAILURES
