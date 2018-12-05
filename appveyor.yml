@@ -151,8 +151,6 @@ build_script:
 #          write-host "Service running after manual restart!"
 #      }
 #      $env:FAILURES = $failures
-  - ps: msiexec.exe /qn /i sigsci-agent-3.15.1.msi /l* install2.log | Out-Null 
-=======
       # to test/build the installer locally
       #- 7z e sigsci-agent.zip
       #- ps: |
