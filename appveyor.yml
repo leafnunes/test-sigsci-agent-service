@@ -38,6 +38,8 @@ environment:
   PATH: $(PATH);$(SIGSCI_INSTALL_DIR)\Agent
   RDP_ON_FAIL: 'true'
   FAILURES: ''
+  SECRET_ACCESS_KEY:
+      secure: LCTgNVpU7r034V9TuqwPaFapNB8D6Zi6ia52gfItcJopG27XzPx/ZSVEx3nt3vNe
 
 # Build worker image (VM template)
 # include VS2013, as it's windows 2012R2, as well as VS2017 which is 2016
@@ -71,7 +73,7 @@ platform:
 
 install:
   - ps: New-Item -ItemType "directory" -Path "$env:SIGSCI_INSTALL_DIR\Agent"
-  - ps: Out-File -Encoding ascii -FilePath "$env:SIGSCI_INSTALL_DIR\Agent\agent.conf" -InputObject "accesskeyid=5c85b88b-6579-470b-9aef-84be9ec6be30`r`nsecretaccesskey=6koN5SGNBf2siVwOIZM5PLVJ8Nw2r4INbW8cCbZdaVg`r`nrpc-address=127.0.0.1:9999`r`nrpc-version=1`r`n"
+  - ps: Out-File -Encoding ascii -FilePath "$env:SIGSCI_INSTALL_DIR\Agent\agent.conf" -InputObject "accesskeyid=5c85b88b-6579-470b-9aef-84be9ec6be30`r`nsecretaccesskey=$env:SECRET_ACCESS_KEY`r`nrpc-address=127.0.0.1:9999`r`nrpc-version=1`r`n"
   - ps: write-host "https://dl.signalsciences.net/sigsci-agent/$env:SIGSCI_FIRST_VERSION/windows/sigsci-agent_$env:SIGSCI_FIRST_VERSION.msi"
   - ps: Invoke-webrequest "https://dl.signalsciences.net/sigsci-agent/$env:SIGSCI_FIRST_VERSION/windows/sigsci-agent_$env:SIGSCI_FIRST_VERSION.msi" -OutFile sigsci-agent_$env:SIGSCI_FIRST_VERSION.msi
   - ps: write-host "https://dl.signalsciences.net/sigsci-agent/$env:SIGSCI_SECOND_VERSION/windows/sigsci-agent_$env:SIGSCI_SECOND_VERSION.msi"
